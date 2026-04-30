@@ -47,21 +47,17 @@ export class User extends Document {
     select: false,
   })
   password: string;
+
   @Prop({
     default: false,
     select: false,
   })
-  @Prop({
-    default: false,
-    select: false,
-  }) 
   isDeleted: boolean;
 
   @Prop({
-    default: 1, 
+    default: 1,
   })
   role: number;
- 
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

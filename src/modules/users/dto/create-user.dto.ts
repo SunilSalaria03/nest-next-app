@@ -3,11 +3,12 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   MinLength,
 } from 'class-validator';
-import { Gender } from 'src/shared/enums/enums';
+import { Gender, UserRole } from 'src/shared/enums/enums';
 
 export class CreateUserDto {
   @IsString()
@@ -36,4 +37,8 @@ export class CreateUserDto {
   @IsString()
   @MinLength(6)
   password: string;
+
+  @IsEnum(UserRole)
+  @IsOptional()
+  role?: UserRole;
 }

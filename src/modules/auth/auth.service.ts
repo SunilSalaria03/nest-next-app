@@ -28,9 +28,13 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException(AUTH.LOGIN_FAILED);
     }
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1h',
+      },
+    );
     const response: AuthData = {
       user,
       token,
@@ -68,7 +72,7 @@ export class AuthService {
       const newUser = new this.userModel({ ...data, password: hashedPassword });
       const savedUser = await newUser.save();
       const token = jwt.sign(
-        { userId: savedUser._id },
+        { userId: savedUser._id, role: savedUser.role },
         process.env.JWT_SECRET,
         {
           expiresIn: '1h',

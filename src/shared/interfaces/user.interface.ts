@@ -9,6 +9,7 @@ export interface IUser {
   address?: string;
   phone?: string;
   isDeleted?: boolean;
+  role?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
