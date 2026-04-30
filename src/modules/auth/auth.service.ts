@@ -87,4 +87,6 @@ export class AuthService {
       throw new BadRequestException(error);
     }
   }
+
+  // async forgotPassword(data: )
 }

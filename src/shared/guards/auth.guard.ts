@@ -3,25 +3,29 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import * as jwt from 'jsonwebtoken';
-import { Model } from 'mongoose';
-import {
-  User,
-  UserDocument,
-} from 'src/modules/users/schemas/user.schema';
+} from '@nestjs/common'; 
+import * as jwt from 'jsonwebtoken'; 
 import { USERS } from '../constants/message.constant';
+import { UserService } from 'src/modules/users/user.service';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(private userService: UserService, private readonly reflector: Reflector,) {}
+  
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;
     const token = this.extractToken(authHeader);
     const jwtSecret = process.env.JWT_SECRET;
+    const isPublic = this.reflector.getAllAndOverride<boolean>(
+      IS_PUBLIC_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+  
+    if (isPublic) return true;
 
     if (!token || !jwtSecret) {
       throw new UnauthorizedException(USERS.USER_NOT_AUTHENTICATED);
@@ -36,7 +40,7 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException(USERS.USER_NOT_AUTHENTICATED);
       }
 
-      const user = await this.userModel.findById(payload.userId);
+      const user = await this.userService.getUserBYId(payload.userId);
       if (!user) {
         throw new UnauthorizedException(USERS.USER_NOT_AUTHENTICATED);
       }
