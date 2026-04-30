@@ -4,11 +4,13 @@ import { AuthResponse } from '../../shared/interfaces/auth.interface';
 import { AUTH } from 'src/shared/constants/message.constant';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
+import { Public } from 'src/shared/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
+  
+  @Public()
   @Post('login')
   async login(@Body() loginDto: LoginDto): Promise<AuthResponse> {
     const auth = await this.authService.login(loginDto);
@@ -18,6 +20,7 @@ export class AuthController {
     };
   }
 
+  @Public()
   @Post('signup')
   async signup(@Body() signupDto: SignupDto): Promise<AuthResponse> {
     const auth = await this.authService.signup(signupDto);

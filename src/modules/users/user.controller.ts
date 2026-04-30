@@ -5,22 +5,18 @@ import {
   Get,
   Param,
   Post,
-  Put,
-  UseGuards,
+  Put, 
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserResponse, UsersResponse } from 'src/shared/interfaces/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { USERS } from 'src/shared/constants/message.constant';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Types } from 'mongoose';
-import { AuthGuard } from 'src/shared/guards/auth.guard';
-import { RolesGuard } from 'src/shared/guards/roles.guard';
+import { Types } from 'mongoose'; 
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { UserRole } from 'src/shared/enums/enums';
 
 @Controller('users')
-@UseGuards(AuthGuard, RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -58,7 +54,7 @@ export class UserController {
   @Roles(UserRole.ADMIN)
   async updateUser(
     @Param('_id') _id: Types.ObjectId,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateUserDto, 
   ): Promise<UserResponse> {
     const user = await this.userService.updateUser({ ...updateUserDto, _id });
     return {
